@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intelligent Property Analyzer</title>
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            font-weight: normal;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            border: 2px solid black;
+            max-width: 500px;
+            margin:0px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #333333;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 5px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            color: #555555;
+            margin-bottom: 2px;
+        }
+
+        .form-group input[type="number"],
+        .form-group select {
+            width: 100%;
+            padding: 5px;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 16px;
+            background-color: #f2f2f2;
+        }
+
+        .form-group input[type="radio"],
+        .form-group input[type="checkbox"] {
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .button-container {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .button-container button {
+            background-color: #4285F4;
+            color: #ffffff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .button-container button:hover {
+            background-color: #3367D6;
+        }
+
+        .predicted-price {
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333333;
+        }
+
+        .error-message {
+            margin-top: 10px;
+            font-size: 14px;
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Intelligent Property Analyzer</h1>
+        <form action="/predict_price" method="POST">
+            <div class="form-group">
+                <label for="area">Area (in sq. ft.):</label>
+                <input type="number" id="area" name="area" required>
+            </div>
+
+            <div class="form-group">
+                <label for="bedroom">Bedroom:</label>
+                <select id="bedroom" name="bedroom">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bathroom">Bathroom:</label>
+                <select id="bathroom" name="bathroom">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="stories">Stories:</label>
+                <select id="stories" name="stories">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Mainroad:</label>
+                <input type="radio" name="mainroad" value="1">Yes
+                <input type="radio" name="mainroad" value="0" checked>No
+            </div>
+
+            <div class="form-group">
+                <label>Guest Room:</label>
+                <input type="radio" name="guestroom" value="1">Yes
+                <input type="radio" name="guestroom" value="0" checked>No
+            </div>
+
+            <div class="form-group">
+                <label>Basement:</label>
+                <input type="radio" name="basement" value="1" required>Yes
+                <input type="radio" name="basement" value="0" checked>No
+            </div>
+
+            <div class="form-group">
+                <label>Air Conditioning:</label>
+                <input type="radio" name="airconditioning" value="1">Yes
+                <input type="radio" name="airconditioning" value="0" checked>No
+            </div>
+
+            <div class="form-group">
+                <label>Hot Water Heating:</label>
+                <input type="radio" name="hotwaterheating" value="1">Yes
+                <input type="radio" name="hotwaterheating" value="0" checked>No
+            </div>
+
+            <div class="form-group">
+                <label for="noparking">No. of Parking:</label>
+                <select id="noparking" name="noparking">
+                    <option value="0">0</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="furnishingstatus">Furnishing Status:</label>
+                <select id="furnishingstatus" name="furnishingstatus">
+                    <option value="furnished">Furnished</option>
+                    <option value="semi-furnished">Semi-Furnished</option>
+                    <option value="unfurnished">Unfurnished</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Preferred Area:</label>
+                <input type="radio" name="preferredarea" value="yes">Yes
+                <input type="radio" name="preferredarea" value="no">No
+            </div>
+
+            <div class="button-container">
+                <button type="submit">Predict Price</button>
+            </div>
+        </form>
+
+        {% if predicted_price is not none %}
+        <div class="predicted-price">
+            Predicted Price: Rs. {{ "%.2f"|format(predicted_price) }}
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="error-message">
+            {{ error }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
